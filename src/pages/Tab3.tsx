@@ -23,7 +23,7 @@ const Tab3: React.FC = () => {
       <IonContent fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>
-            <IonTitle size="large">Perfil de Usuario</IonTitle>
+            <IonTitle size="large">Perfil del Usuario</IonTitle>
           </IonToolbar>
         </IonHeader>
         <div className="card-container">

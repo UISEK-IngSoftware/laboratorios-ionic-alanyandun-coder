@@ -2,9 +2,9 @@
 
 ## Información del Estudiante
 
-- **Nombre:** [Tu nombre completo aquí]
-- **Carrera:** [Tu carrera]
-- **Fecha de inicio:** [Fecha]
+- **Nombre:** [Alan JAvier Yandun Ayala]
+- **Carrera:** [Ingenieria en desarrollo de software]
+- **Fecha de inicio:** [10/06/2026]
 
 ---
 
