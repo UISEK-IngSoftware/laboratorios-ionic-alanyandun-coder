@@ -2,24 +2,20 @@ import "./RepoItem.css";
 import React from "react";
 import {IonIcon, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLabel, IonThumbnail} from "@ionic/react";
 import {pencilOutline, trashOutline} from "ionicons/icons";
+import {Repository} from "../interfaces/Repository";
 
-interface RepoProps {
-    name: string;
-    description: string;
-    language: string;
-    avatarUrl: string;
-}
-const RepoItem: React.FC<RepoProps> = ({ name, description, language, avatarUrl }) => {
+
+const RepoItem: React.FC<Repository> = (repository) => {
     return (
         <IonItemSliding>
             <IonItem>
                 <IonThumbnail slot="start">
-                    <img alt="Repositorio" src={avatarUrl} />
+                    <img alt={repository.name} src={repository.owner.avatar_url} />
                 </IonThumbnail>
                 <IonLabel>
-                    <h2> {name} </h2>
-                    <p> {description} </p>
-                    <p> Language: {language} </p>
+                    <h2> {repository.name} </h2>
+                    <p> {repository.description} </p>
+                    <p> Language: {repository.language} </p>
                 </IonLabel>
             </IonItem>
 
@@ -37,5 +33,3 @@ const RepoItem: React.FC<RepoProps> = ({ name, description, language, avatarUrl 
 };
 
 export default RepoItem;
-
-//falla al commit

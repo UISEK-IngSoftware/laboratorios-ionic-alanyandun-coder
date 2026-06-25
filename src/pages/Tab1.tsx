@@ -4,12 +4,31 @@ import {
     IonList,
     IonPage,
     IonTitle,
-    IonToolbar
+    IonToolbar, useIonViewWillEnter
 } from '@ionic/react';
 import './Tab1.css';
+import React from "react";
+import {Repository} from "../interfaces/Repository";
+import {fetchRepositories} from "../services/GithubService";
 import RepoItem from "../components/RepoItem";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const Tab1: React.FC = () => {
+    const [repos, setRepos] = React.useState<Repository[]>([]);
+    const [loading, setLoading] = React.useState(false);
+
+    const loadRepositories = async () => {
+        setLoading(true);
+        const reposData = await fetchRepositories();
+        setRepos(reposData);
+        setLoading(false);
+    };
+
+    useIonViewWillEnter(() => {
+        loadRepositories();
+    });
+
+
   return (
     <IonPage>
       <IonHeader>
@@ -23,14 +42,20 @@ const Tab1: React.FC = () => {
             <IonTitle size="large">Repositorios</IonTitle>
           </IonToolbar>
         </IonHeader>
+          {!loading && repos.length > 0 && (
 
         <IonList>
-            <RepoItem name="Repositorio 1" description="Descripción del repositorio 1" language="JavaScript" avatarUrl="https://avatars.githubusercontent.com/u/48026030?v=4" />
-            <RepoItem name="Repositorio 2" description="Descripción del repositorio 2" language="Python" avatarUrl="https://avatars.githubusercontent.com/u/48026030?v=4" />
-            <RepoItem name="Repositorio 3" description="Descripción del repositorio 3" language="Java" avatarUrl="https://avatars.githubusercontent.com/u/48026030?v=4" />
-            <RepoItem name="Repositorio 4" description="Descripción del repositorio 4" language="C++" avatarUrl="https://avatars.githubusercontent.com/u/48026030?v=4" />
-            <RepoItem name="Repositorio 5" description="Descripción del repositorio 5" language="Ruby" avatarUrl="https://avatars.githubusercontent.com/u/48026030?v=4" />
+            {repos.map((repo)=> (
+                <RepoItem key={repo.id} {...repo} />
+            ))
+            }
+
         </IonList>
+          )}
+          <LoadingSpinner isOpen={loading} />
+          {!loading && repos.length === 0 && (
+            <p>No se encontraron repositorios.</p>
+          )}
 
 
       </IonContent>
@@ -39,5 +64,3 @@ const Tab1: React.FC = () => {
 };
 
 export default Tab1;
-
-//s

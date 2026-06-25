@@ -1,7 +1,7 @@
 import {
     IonCard,
     IonCardContent,
-    IonCardHeader,
+    IonCardHeader, IonCardSubtitle,
     IonCardTitle,
     IonContent,
     IonHeader,
@@ -11,6 +11,7 @@ import {
 } from '@ionic/react';
 
 import './Tab3.css';
+import React from "react";
 
 const Tab3: React.FC = () => {
   return (
