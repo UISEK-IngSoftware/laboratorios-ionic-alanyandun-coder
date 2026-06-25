@@ -7,13 +7,29 @@ import {
     IonHeader,
     IonPage,
     IonTitle,
-    IonToolbar
+    IonToolbar, useIonViewWillEnter
 } from '@ionic/react';
 
 import './Tab3.css';
 import React from "react";
+import {GithubUser} from "../interfaces/GithubUser";
+import {getUserInfo} from "../services/GithubService";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const Tab3: React.FC = () => {
+    const [userInfo, setUserInfo] = React.useState<GithubUser | null>(null);
+    const [loading, setLoading] = React.useState(false);
+
+    const loadUserInfo = async () => {
+        setLoading(true);
+        const userData = await getUserInfo();
+        setUserInfo(userData);
+        setLoading(false);
+    };
+    useIonViewWillEnter(() => {
+        loadUserInfo();
+    });
+
   return (
     <IonPage>
       <IonHeader>
@@ -29,21 +45,19 @@ const Tab3: React.FC = () => {
         </IonHeader>
         <div className="card-container">
         <IonCard className="card">
-            <img alt="Avatar" src="https://avatars.githubusercontent.com/u/48026030?v=4" />
+            <img alt={userInfo?.name} src={userInfo?.avatar_url} />
             <IonCardHeader>
-                <IonCardTitle> Alan Javier Yandun</IonCardTitle>
-                <IonCardTitle> alanjavieryandun </IonCardTitle>
+                <IonCardTitle> {userInfo?.name} </IonCardTitle>
+                <IonCardSubtitle> {userInfo?.login} </IonCardSubtitle>
             </IonCardHeader>
             <IonCardContent>
               <p>
-                Desarrollador de Software con experiencia en el desarrollo de aplicaciones web y móviles.
-                  Apasionado por la tecnología y el aprendizaje continuo.
-                  Siempre buscando nuevos desafíos y oportunidades para crecer profesionalmente.
+                {userInfo?.bio}
               </p>
             </IonCardContent>
         </IonCard>
         </div>
-
+        <LoadingSpinner isOpen={loading} />
       </IonContent>
     </IonPage>
   );
