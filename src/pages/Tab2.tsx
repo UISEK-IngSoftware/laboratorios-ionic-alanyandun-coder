@@ -1,4 +1,14 @@
-import {IonButton, IonContent, IonHeader, IonInput, IonPage, IonTextarea, IonTitle, IonToolbar} from '@ionic/react';
+import {
+    IonButton,
+    IonContent,
+    IonHeader,
+    IonInput,
+    IonPage,
+    IonTextarea,
+    IonTitle,
+    IonToolbar,
+    useIonViewWillEnter
+} from '@ionic/react';
 
 import './Tab2.css';
 import {useHistory} from "react-router";
@@ -10,6 +20,7 @@ import LoadingSpinner from "../components/LoadingSpinner";
 const Tab2: React.FC = () => {
     const history = useHistory();
     const [loading, setLoading] = React.useState(false);
+    const [errorMsg, setErrorMsg] = React.useState("");
 
     const repoFormData: RepositoryPayload = {
         name: '',
@@ -24,22 +35,28 @@ const Tab2: React.FC = () => {
 
     const saveRepository = () => {
         if (repoFormData.name.trim() ==='') {
-            alert('El nombre del repositorio es obligatorio');
+            setErrorMsg("El nombre del repositorio es obligatorio");
             return;
         }
         setLoading(true);
         createRepository(repoFormData).then((newRepo) => {
             if (newRepo) {
-                history.push('/tab1');
+                setFormName("");
+                setFormDescription("");
+                history.push("/tab1");
             }
 
         }).catch((error) => {
             console.error('Error al crear el repositorio:', error);
-            alert(' Ocurrio un Error al crear el repositorio');
+            setErrorMsg(" Ocurrio un Error al crear el repositorio");
         }).finally(() => {
             setLoading(false);
         });
     }
+    useIonViewWillEnter(() => {
+        setErrorMsg("");
+
+    })
 
   return (
     <IonPage>
@@ -74,6 +91,7 @@ const Tab2: React.FC = () => {
                 value={repoFormData.description}
                 onIonChange={(e) => setFormDescription(e.detail.value!)}
             />
+            {errorMsg !== "" && <div className="error-message">{errorMsg}</div>}
 
 
             <IonButton
