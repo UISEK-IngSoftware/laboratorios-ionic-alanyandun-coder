@@ -7,5 +7,4 @@ export interface Repository {
         login: string;
         avatar_url: string;
     }
-
 }

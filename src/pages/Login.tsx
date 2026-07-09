@@ -1,5 +1,5 @@
-import "./Login.css"
-import React, {useState} from "react"
+import "./Login.css";
+import React, { useState } from "react";
 import {
     IonButton,
     IonContent,
@@ -9,36 +9,50 @@ import {
     IonPage,
     IonText,
     IonTitle,
-    IonToolbar
+    IonToolbar,
+    IonSpinner
 } from "@ionic/react";
-import {logoGithub} from "ionicons/icons";
+import { logoGithub } from "ionicons/icons";
 import AuthService from "../services/AuthService";
+import { getUserInfo } from "../services/GithubService";
+
 const Login: React.FC = () => {
     const [username, setUsername] = useState("");
     const [token, setToken] = useState("");
     const [errorMsg, setErrorMsg] = useState("");
+    const [loading, setLoading] = useState(false);
 
-    const handleLogin = (event: React.FormEvent) => {
+    const handleLogin = async (event: React.FormEvent) => {
         event.preventDefault();
         setErrorMsg("");
+
         if (username.trim() === "" || token.trim() === "") {
             setErrorMsg("Por favor, ingresa tu nombre de usuario y token.");
             return;
         }
 
-        if (AuthService.login(username, token)) {
+        setLoading(true);
+
+        AuthService.login(username, token);
+
+        try {
+
+            await getUserInfo();
             window.location.href = "/tab1";
-        } else {
-            setErrorMsg("Error al iniciar sesion.");
+        } catch (error) {
+            AuthService.Logout();
+            setErrorMsg("Error al iniciar sesión. Verifica tus credenciales.");
+        } finally {
+            setLoading(false);
         }
     }
 
     return (
         <IonPage>
             <IonHeader>
-              <IonToolbar>
-                  <IonTitle>Inicia Sesion</IonTitle>
-              </IonToolbar>
+                <IonToolbar>
+                    <IonTitle>Inicia Sesion</IonTitle>
+                </IonToolbar>
             </IonHeader>
             <IonContent className="ion-padding">
                 <IonHeader collapse="condense">
@@ -47,9 +61,9 @@ const Login: React.FC = () => {
                     </IonToolbar>
                 </IonHeader>
 
-                <div className="login-container" onSubmit={handleLogin}>
-                    <form className="login-form">
-                        <IonIcon icon ={logoGithub} className="github-icon" />
+                <div className="login-container">
+                    <form className="login-form" onSubmit={handleLogin}>
+                        <IonIcon icon={logoGithub} className="github-icon" />
 
                         <IonInput
                             className="login-field"
@@ -63,7 +77,7 @@ const Login: React.FC = () => {
 
                         <IonInput
                             className="login-field"
-                            label="Contraseña"
+                            label="Contraseña / Token PAT"
                             labelPlacement="floating"
                             fill="outline"
                             type="password"
@@ -71,23 +85,20 @@ const Login: React.FC = () => {
                             onIonChange={(e) => setToken(e.detail.value!)}
                         />
 
-                        {errorMsg !=="" && <IonText color="danger">{errorMsg}</IonText>}
+                        {errorMsg !== "" && <IonText color="danger"><p>{errorMsg}</p></IonText>}
 
                         <IonButton
                             className="login-button"
                             expand="block"
                             type="submit"
+                            disabled={loading}
                         >
-                            Iniciar Sesion
+                            {loading ? <IonSpinner name="crescent" /> : "Iniciar Sesion"}
                         </IonButton>
-
-
                     </form>
                 </div>
-
             </IonContent>
         </IonPage>
     )
-
-    }
-    export default Login;
+}
+export default Login;
